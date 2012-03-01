@@ -10,8 +10,6 @@ import java.io.Writer;
 import org.apache.commons.io.IOUtils;
 
 import ro.isdc.wro.model.resource.Resource;
-import ro.isdc.wro.model.resource.ResourceType;
-import ro.isdc.wro.model.resource.SupportedResourceType;
 import ro.isdc.wro.model.resource.processor.ResourcePostProcessor;
 import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
 import ro.isdc.wro.util.WroUtil;
@@ -23,7 +21,6 @@ import ro.isdc.wro.util.WroUtil;
  * @author Alex Objelean
  * @created Created on Nov 28, 2008
  */
-@SupportedResourceType(ResourceType.JS)
 public class CommentStripperProcessor
   implements ResourcePreProcessor, ResourcePostProcessor {
   /**
