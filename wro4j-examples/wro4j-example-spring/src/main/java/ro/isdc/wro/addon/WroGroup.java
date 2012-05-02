@@ -5,9 +5,9 @@ import ro.isdc.wro.model.resource.ResourceType;
 import java.util.Collection;
 
 /**
- * Value bean to hold group definitions and easily be able to create Wro Group objects from the spring configuration.
+ * Value bean to represent wro-group definitions.
  *
- * To configure a new resource group add the following to spring config xml:
+ * To configure a new resource group in spring add the following to applicationContext.xml:
  * <bean class="ro.isdc.wro.addon.WroGroup">
  *    <property name="groupName" value="main"/>
  *    <property name="uris">
@@ -33,7 +33,7 @@ public class WroGroup {
     private Collection<String> uris;
 
     /**
-     * ResourceType as specified by the ResourceType enum in wro4j
+     * ResourceType. Can be CSS or JS.
      */
     private ResourceType resourceType;
 

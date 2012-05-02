@@ -6,6 +6,9 @@ import ro.isdc.wro.model.resource.Resource;
 
 import java.util.Collection;
 
+/**
+ * Factory that is used to crate a WroModel and add all groups to that model.
+ */
 public class WroModelFactory implements ro.isdc.wro.model.factory.WroModelFactory {
 
     private Collection<WroGroup> groups;
