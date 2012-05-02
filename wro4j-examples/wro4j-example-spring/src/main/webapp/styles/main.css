@@ -1,0 +1,21 @@
+.parentFolder {
+	background: url(../img/image.png);	
+}
+.subfolder {
+  background: url(img/image.png);  
+}
+.sameFolder {
+  background: url(image.png);
+}
+
+.box {
+    width: 300px;
+    background: red;
+    color: navy;
+}
+
+.box p {
+    padding: 10px;
+    font-weight: bolder;
+    font-size: 2em;
+}

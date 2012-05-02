@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:integration="http://www.springframework.org/schema/integration"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/integration/file
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <!-- Configures the @Controller programming model -->
+    <mvc:annotation-driven/>
+
+    <!-- Scans the classpath of this application for @Components to deploy as beans -->
+    <context:component-scan base-package="ro.isdc.wro.examples.spring.controller"/>
+
+    <!-- Static resources -->
+    <mvc:default-servlet-handler/>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- Load the wro-properties -->
+    <bean id="wroProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:wro.properties"/>
+    </bean>
+
+    <!-- Define your wro-groups -->
+    <bean id="wroModelFactory" class="ro.isdc.wro.addon.WroModelFactory">
+        <constructor-arg name="groups">
+            <list>
+                <bean class="ro.isdc.wro.addon.WroGroup">
+                    <property name="groupName" value="main"/>
+                    <property name="uris">
+                        <list>
+                            <value>/styles/main.css</value>
+                        </list>
+                    </property>
+                    <property name="resourceType" value="CSS"/>
+                </bean>
+                <bean class="ro.isdc.wro.addon.WroGroup">
+                    <property name="groupName" value="all"/>
+                    <property name="uris">
+                        <list>
+                            <value>/styles/**.css</value>
+                        </list>
+                    </property>
+                    <property name="resourceType" value="CSS"/>
+                </bean>
+                <bean class="ro.isdc.wro.addon.WroGroup">
+                    <property name="groupName" value="scripts"/>
+                    <property name="uris">
+                        <list>
+                            <value>/scripts/*.js</value>
+                        </list>
+                    </property>
+                    <property name="resourceType" value="JS"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- Shows how simple it is to define your own list of processors -->
+    <bean class="ro.isdc.wro.model.resource.processor.factory.SimpleProcessorsFactory" id="cssProcessorFactory">
+        <property name="resourcePreProcessors">
+            <list>
+                <bean class="ro.isdc.wro.model.resource.processor.impl.css.CssUrlRewritingProcessor"/>
+                <bean class="ro.isdc.wro.model.resource.processor.impl.css.CssImportPreProcessor"/>
+                <bean class="ro.isdc.wro.model.resource.processor.impl.css.JawrCssMinifierProcessor"/>
+            </list>
+        </property>
+        <property name="resourcePostProcessors">
+            <list>
+                <bean class="ro.isdc.wro.model.resource.processor.impl.css.CssVariablesProcessor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="managerFactory" class="ro.isdc.wro.manager.factory.BaseWroManagerFactory">
+        <property name="modelFactory" ref="wroModelFactory"/>
+        <property name="processorsFactory" ref="cssProcessorFactory" />
+    </bean>
+
+    <bean id="wroFilter" class="ro.isdc.wro.http.ConfigurableWroFilter">
+        <property name="properties" ref="wroProperties"/>
+        <property name="wroManagerFactory" ref="managerFactory"/>
+    </bean>
+</beans>
